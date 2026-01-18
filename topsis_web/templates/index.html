@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TOPSIS Web Service</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="app">
+    <div class="card">
+
+        <div class="header">
+            <h1>TOPSIS Web Service</h1>
+        </div>
+
+        <form method="POST" action="/submit" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label>Upload Dataset</label>
+            <div class="file-box">
+                <input type="file" name="file" required>
+            </div>                
+            <div class="help">
+                    First column should be the model names, rest should be numeric.
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Weights</label>
+                <input type="text" name="weights" placeholder="1,1,1,2" required>
+                <div class="help">
+                    Comma-separated numeric values
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Impacts</label>
+                <input type="text" name="impacts" placeholder="+,+,-,+" required>
+                <div class="help">
+                    Comma-seperated values
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" placeholder="example@gmail.com">
+            </div>
+
+            <button type="submit">Run TOPSIS</button>
+        </form>
+
+        {% if message %}
+            <div class="message">{{ message }}</div>
+        {% endif %}
+
+        {% if table %}
+            <div class="result">
+                <h3>Result</h3>
+                    <div class="table-container">
+                        {{ table|safe }}
+                    </div>
+            </div>
+        {% endif %}
+
+        <div class="sample">
+            <h3>Sample CSV</h3>
+
+    <table class="sample-table">
+        <thead>
+            <tr>
+                <th>Model</th>
+                <th>Price</th>
+                <th>Storage</th>
+                <th>Camera</th>
+                <th>Battery</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>P1</td>
+                <td>250</td>
+                <td>64</td>
+                <td>12</td>
+                <td>4000</td>
+            </tr>
+            <tr>
+                <td>P2</td>
+                <td>200</td>
+                <td>32</td>
+                <td>8</td>
+                <td>3500</td>
+            </tr>
+            <tr>
+                <td>P3</td>
+                <td>300</td>
+                <td>128</td>
+                <td>16</td>
+                <td>4500</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="download-btn-wrapper">
+        <a href="/static/data.xlsx" download class="download-btn">
+            Download Sample File
+        </a>
+    </div>
+</div>
+
+
+        <div class="footer">
+            UCS654 • TOPSIS Assignment • Bhavya (102303560)
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
