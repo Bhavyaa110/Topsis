@@ -95,7 +95,7 @@ def submit():
         message="Result sent to email and displayed below"
     )
 
-def send_email(to_email, attachment_path, weights, impacts, html_table):
+def send_email(to_email, csv_data, weights, impacts, html_table):
     EMAIL_USER = os.getenv("EMAIL_USER")
     EMAIL_PASS = os.getenv("EMAIL_PASS")
 
@@ -137,13 +137,12 @@ def send_email(to_email, attachment_path, weights, impacts, html_table):
 
     msg.add_alternative(html_body, subtype='html')
 
-    with open(attachment_path, 'rb') as f:
-        msg.add_attachment(
-            f.read(),
-            maintype='text',
-            subtype='csv',
-            filename="result.csv"
-        )
+    msg.add_attachment(
+        csv_data.encode('utf-8'),
+        maintype='text',
+        subtype='csv',
+        filename="topsis_result.csv"
+    )
 
     with smtplib.SMTP_SSL('smtp.gmail.com', 465) as smtp:
         smtp.login(EMAIL_USER, EMAIL_PASS)
