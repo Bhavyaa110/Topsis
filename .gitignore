@@ -1,6 +1,48 @@
+# Python bytecode / cache
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Build artifacts
 build/
 dist/
 *.egg-info/
+*.egg
+wheels/
+*.whl
+
+# Virtual environments
+venv/
+env/
 .env
+.env.local
+.env.*.local
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Generated data/output (CLI + web)
+uploads/
+results/
+topsis_web/uploads
+topsis_web/results
+
+# Generated data files (global) – but keep static samples
+*.csv
+*.xls
+*.xlsx
+!topsis_web/static/*.csv
+!topsis_web/static/*.xls
+!topsis_web/static/*.xlsx
