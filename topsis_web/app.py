@@ -16,12 +16,6 @@ else:
 
 app = Flask(__name__)
 
-UPLOAD_FOLDER = "uploads"
-RESULT_FOLDER = "results"
-
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-os.makedirs(RESULT_FOLDER, exist_ok=True)
-
 def valid_email(email):
     return re.match(r"[^@]+@[^@]+\.[^@]+", email)
 
@@ -34,9 +28,9 @@ def submit():
     file = request.files['file']
     raw_weights = request.form['weights']       
     raw_impacts = request.form['impacts']
-    email = request.form['email']
+    email = request.form.get('email', '')
 
-    if not valid_email(email):
+    if email and not valid_email(email):
         return render_template("index.html", message="Invalid email format")
 
     weights = raw_weights.split(',')
@@ -48,13 +42,12 @@ def submit():
     if not all(i in ['+', '-'] for i in impacts):
         return render_template("index.html", message="Impacts must be + or -")
 
-    input_path = os.path.join(UPLOAD_FOLDER, file.filename)
-    file.save(input_path)
-
-    try:
-        data = pd.read_csv(input_path)
-    except:
-        data = pd.read_excel(input_path)
+    if file.filename.endswith(".csv"):
+        data = pd.read_csv(file)
+    elif file.filename.endswith((".xls", ".xlsx")):
+        data = pd.read_excel(file)
+    else:
+        return render_template("index.html", message="Only CSV or Excel allowed")
 
     if data.shape[1] < 3:
         return render_template("index.html", message="File must contain at least 3 columns")
@@ -86,9 +79,7 @@ def submit():
     data['Topsis Score'] = score
     data['Rank'] = data['Topsis Score'].rank(ascending=False)
 
-    result_path = os.path.join(RESULT_FOLDER, "result.csv")
-    data.to_csv(result_path, index=False)
-
+    csv_data = data.to_csv(index=False)
     html_table = data.to_html(index=False, border=1)
     html_table = html_table.replace(
         '<table border="1" class="dataframe">',
@@ -96,11 +87,11 @@ def submit():
         'style="border-collapse:collapse;width:100%;text-align:center;">'
     )
 
-    send_email(email, result_path, raw_weights, raw_impacts, html_table)
+    send_email(email, csv_data, raw_weights, raw_impacts, html_table)
 
     return render_template(
         "index.html",
-        table=data.to_html(index=False),
+        table=data.to_html(classes="table",index=False),
         message="Result sent to email and displayed below"
     )
 
